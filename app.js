@@ -21,10 +21,13 @@ async function initFirebase() {
   teams = snapshot.val() || [];
 }
 
-async function updateCurrent(value) {
+async function updateCurrent(value, idx) {
   if (teamIndex === null) return;
-  await db.ref(`cityScavengerHunt/${teamIndex}/current`).set(value);
+  const updates = { current: value };
+  if (typeof idx === 'number') updates.index = idx;
+  await db.ref(`cityScavengerHunt/${teamIndex}`).update(updates);
   team.current = value;
+  if (typeof idx === 'number') team.index = idx;
 }
 
 async function loadPage(id) {
@@ -39,11 +42,16 @@ async function loadPage(id) {
 }
 
 function attachHandler(id) {
+  if (id === '0-2') {
+    setupStartPage();
+    return;
+  }
   const btn = document.querySelector('#page-container button.confirm-btn') ||
               document.querySelector('#page-container button[type="submit"]');
   if (!btn) return;
   btn.addEventListener('click', async () => {
     let nextId;
+    let nextIndex;
     if (id === '0-1') {
       const pwd = document.querySelector('#page-container input')?.value.trim();
       const idx = teams.findIndex(t => t.password === pwd);
@@ -53,20 +61,64 @@ function attachHandler(id) {
       }
       teamIndex = idx;
       team = teams[idx];
-      nextId = team.sequence[team.sequence.indexOf('0-1') + 1];
+      if (team.current && team.current !== '0-1') {
+        nextId = team.current;
+        nextIndex = team.index ?? team.sequence.indexOf(nextId);
+      } else {
+        const i0 = team.sequence.indexOf('0-1');
+        nextId = team.sequence[i0 + 1];
+        nextIndex = i0 + 1;
+      }
     } else {
       const input = document.querySelector('#page-container input');
       if (input && input.value.trim() !== 'password') {
         alert('密碼錯誤');
         return;
       }
-      const currIdx = team.sequence.indexOf(id);
+      const currIdx = team.index ?? team.sequence.indexOf(id);
       nextId = team.sequence[currIdx + 1];
+      nextIndex = currIdx + 1;
     }
     if (nextId) {
-      await updateCurrent(nextId);
+      await updateCurrent(nextId, nextIndex);
       await loadPage(nextId);
     }
+  });
+}
+
+function setupStartPage() {
+  if (!team) return;
+  const buttons = document.querySelectorAll('#page-container .button-group button');
+  if (buttons.length < 3) return;
+
+  const currIdx = team.index ?? team.sequence.indexOf('0-2');
+  const nextId = team.sequence[currIdx + 1];
+  const visited = team.sequence.slice(0, currIdx);
+  const done1 = visited.includes('1-2');
+  const done2 = visited.includes('2-5-b');
+  const done3 = visited.includes('3-9');
+
+  buttons.forEach(btn => {
+    btn.classList.add('disabled');
+    btn.disabled = true;
+  });
+
+  if (done1) buttons[0].classList.add('done');
+  if (done2) buttons[1].classList.add('done');
+  if (done3) buttons[2].classList.add('done');
+
+  let idx;
+  if (nextId.startsWith('1')) idx = 0;
+  else if (nextId.startsWith('2')) idx = 1;
+  else if (nextId.startsWith('3')) idx = 2;
+
+  const target = buttons[idx];
+  target.classList.remove('disabled');
+  target.disabled = false;
+  target.addEventListener('click', async () => {
+    const nextIndex = currIdx + 1;
+    await updateCurrent(nextId, nextIndex);
+    await loadPage(nextId);
   });
 }
 
