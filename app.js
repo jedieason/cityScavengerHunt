@@ -14,6 +14,20 @@ let teams = [];
 let teamIndex = null;
 let team = null;
 
+function showAlert(msg) {
+  const modal = document.getElementById('alert-modal');
+  const textEl = document.getElementById('alert-text');
+  if (!modal || !textEl) return;
+  textEl.textContent = msg;
+  modal.classList.add('show');
+}
+
+function hideAlert() {
+  const modal = document.getElementById('alert-modal');
+  if (!modal) return;
+  modal.classList.remove('show');
+}
+
 async function initFirebase() {
   const app = firebase.initializeApp(firebaseConfig);
   db = firebase.database(app);
@@ -56,7 +70,7 @@ function attachHandler(id) {
       const pwd = document.querySelector('#page-container input')?.value.trim();
       const idx = teams.findIndex(t => t.password === pwd);
       if (idx === -1) {
-        alert('密碼錯誤');
+        showAlert('密碼錯誤');
         return;
       }
       teamIndex = idx;
@@ -72,7 +86,7 @@ function attachHandler(id) {
     } else {
       const input = document.querySelector('#page-container input');
       if (input && input.value.trim() !== 'password') {
-        alert('密碼錯誤');
+        showAlert('密碼錯誤');
         return;
       }
       const currIdx = team.index ?? team.sequence.indexOf(id);
@@ -81,7 +95,23 @@ function attachHandler(id) {
     }
     if (nextId) {
       await updateCurrent(nextId, nextIndex);
-      await loadPage(nextId);
+      const finales = {
+        '1-2': '苦盡甘來遇線你',
+        '2-5-b': '內卷即地獄',
+        '3-9': '我們與醫的距離'
+      };
+      if (finales[id]) {
+        showAlert(`恭喜完成「${finales[id]}」`);
+        const close = document.getElementById('alert-close');
+        const handler = async () => {
+          close.removeEventListener('click', handler);
+          hideAlert();
+          await loadPage(nextId);
+        };
+        close.addEventListener('click', handler);
+      } else {
+        await loadPage(nextId);
+      }
     }
   });
 }
@@ -123,6 +153,8 @@ function setupStartPage() {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
+  const closeBtn = document.getElementById('alert-close');
+  if (closeBtn) closeBtn.addEventListener('click', hideAlert);
   await initFirebase();
   loadPage('0-1');
 });
