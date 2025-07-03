@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  body { margin:0; padding:20px; font-family: Arial, sans-serif; background:#f5f0dc; color:#000; }
+  table { width:100%; border-collapse: collapse; }
+  th, td { border:1px solid #d1c7b7; padding:8px; text-align:center; }
+  th { background:#fffbea; }
+  button { padding:6px 12px; border:2px solid #d1c7b7; background:#fffbea; cursor:pointer; }
+  button:hover { background:#f2e8d5; }
+  input { padding:4px; border:1px solid #d1c7b7; }
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+</head>
+<body>
+  <table id="team-table">
+    <thead>
+      <tr><th>Team</th><th>Current</th><th>Update</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBLWYpv72R8z4XwZE6F2y9mdy4HDdiqkHc",
+  authDomain: "city-scavenger-hunt-2025.firebaseapp.com",
+  databaseURL: "https://city-scavenger-hunt-2025-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "city-scavenger-hunt-2025",
+  storageBucket: "city-scavenger-hunt-2025.firebasestorage.app",
+  messagingSenderId: "950959276332",
+  appId: "1:950959276332:web:cbbd2bd8dc49619aa42c89",
+  measurementId: "G-5GE9NWQ1YP"
+};
+let db;
+let teams = [];
+function init(){
+  const app = firebase.initializeApp(firebaseConfig);
+  db = firebase.database(app);
+  db.ref('cityScavengerHunt').on('value', snap => {
+    teams = snap.val() || [];
+    render();
+  });
+}
+function render(){
+  const tbody = document.querySelector('#team-table tbody');
+  tbody.innerHTML = '';
+  teams.forEach((t,i)=>{
+    const tr = document.createElement('tr');
+    const tdTeam = document.createElement('td');
+    tdTeam.textContent = t.team || i+1;
+    const tdCurrent = document.createElement('td');
+    const input = document.createElement('input');
+    input.value = t.current || '';
+    tdCurrent.appendChild(input);
+    const tdBtn = document.createElement('td');
+    const btn = document.createElement('button');
+    btn.textContent = '更新';
+    btn.onclick = () => {
+      const value = input.value.trim();
+      const idx = t.sequence ? t.sequence.indexOf(value) : -1;
+      const updates = { current:value };
+      if(idx !== -1) updates.index = idx;
+      db.ref('cityScavengerHunt/'+i).update(updates);
+    };
+    tdBtn.appendChild(btn);
+    tr.appendChild(tdTeam); tr.appendChild(tdCurrent); tr.appendChild(tdBtn);
+    tbody.appendChild(tr);
+  });
+}
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

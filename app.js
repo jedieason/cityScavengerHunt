@@ -13,6 +13,15 @@ let db;
 let teams = [];
 let teamIndex = null;
 let team = null;
+let progressRef = null;
+
+const pagePasswords = {
+  '1-3-b': 'RUBIES',
+  '1-4-b': '256',
+  '1-5-b': '牽知己',
+  '2-3-b': '別用分數定義我',
+  '2-5-a': '真實的自己藏在標準答案外'
+};
 
 function showAlert(msg) {
   const modal = document.getElementById('alert-modal');
@@ -42,6 +51,21 @@ async function updateCurrent(value, idx) {
   await db.ref(`cityScavengerHunt/${teamIndex}`).update(updates);
   team.current = value;
   if (typeof idx === 'number') team.index = idx;
+}
+
+function watchProgress() {
+  if (progressRef) progressRef.off();
+  if (teamIndex === null) return;
+  progressRef = db.ref(`cityScavengerHunt/${teamIndex}`);
+  progressRef.on('value', snap => {
+    const data = snap.val();
+    if (!data) return;
+    if (team && data.current && data.current !== team.current) {
+      team.current = data.current;
+      team.index = data.index;
+      loadPage(data.current);
+    }
+  });
 }
 
 async function loadPage(id) {
@@ -75,6 +99,7 @@ function attachHandler(id) {
       }
       teamIndex = idx;
       team = teams[idx];
+      watchProgress();
       if (team.current && team.current !== '0-1') {
         nextId = team.current;
         nextIndex = team.index ?? team.sequence.indexOf(nextId);
@@ -85,9 +110,13 @@ function attachHandler(id) {
       }
     } else {
       const input = document.querySelector('#page-container input');
-      if (input && input.value.trim() !== 'password') {
-        showAlert('密碼錯誤');
-        return;
+      if (input) {
+        const pwd = input.value.trim();
+        const correct = pagePasswords[id] || 'password';
+        if (pwd !== correct) {
+          showAlert('密碼錯誤');
+          return;
+        }
       }
       const currIdx = team.index ?? team.sequence.indexOf(id);
       nextId = team.sequence[currIdx + 1];
