@@ -60,20 +60,36 @@
     transform: translateY(2px);
     box-shadow: 0 2px #d1c7b7;
   }
+  mark {
+    border-radius: 5px;
+  }
+  .highlight-red {
+    background-color: rgba(244, 64, 64, 0.5);
+    color: rgb(83, 20, 20);
+  }
+  .highlight-yellow {
+    background-color: rgba(255, 175, 128, 0.8);
+    color: #44280d;
+  }
+  .highlight-green {
+    background-color: rgba(124, 143, 204, 0.5);
+    color: rgb(33, 50, 79);
+  }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="title">苦盡甘來遇線你</div>
-    <div class="content">
-      <p>近來，台北車站捷運沿線與地下街悄然瀰漫著一股詭異的不安。坊間盛傳一則難以驗證的都市傳說：</p>
-      <p>只要你在穿梭地底通道時，突然感覺有什麼如蛛絲般的「細線」悄悄纏上你的手腕、腳踝或頸間，那麼，在短短幾分鐘之內，怪事便會接踵而至。</p>
-      <p>有人說，他聽見了愛情崩裂前的低語。</p>
-      <p>有人說，他看見父母齜牙咧嘴笑著將他拆吃入腹。</p>
-      <p>有人說，他觸碰到童年友情溫暖又遙遠的輪廓，如夢一場。</p>
-      <p>傳聞更進一步警告：</p>
-      <p>「千萬不要和你真正關心、在乎的人一起走過那裡……否則，你可能永遠失去他。」</p>
-    </div>
+      <div class="content">
+        <p>近來，台北車站捷運沿線與地下街悄然瀰漫著一股詭異的不安。坊間盛傳一則難以驗證的都市傳說：</p>
+        <p>只要你在穿梭地底通道時，突然感覺有什麼如蛛絲般的「細線」悄悄纏上你的手腕、腳踝或頸間，</p>
+        <p>那麼，在短短幾分鐘之內，怪事便會接踵而至。</p>
+        <p><mark class="highlight-red">有人和戀人一同被困在回憶的囚圖。</mark></p>
+        <p><mark class="highlight-yellow">有人溯洄過往，囿於童年的光景。</mark></p>
+        <p><mark class="highlight-blue">有人驚睹親暱的友人被歷史的洪流吞噬。</mark></p>
+        <p>傳聞更進一步警告：</p>
+        <p>「千萬不要和你真正關心、在乎的人一起走過那裡……否則，你可能永遠失去他。」</p>
+      </div>
     <button class="confirm-btn" type="button">確認</button>
   </div>
 </body>
