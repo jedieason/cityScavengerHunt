@@ -19,22 +19,22 @@
     <div class="title">苦盡甘來遇線你</div>
     <div class="content" id="content">
       <p>是否逃離童年？</p>
-      <button class="confirm-btn">是的</button>
+      <button class="confirm-btn" id="yes-btn">是的</button>
     </div>
   </div>
 <script>
-let count = 0;
-const content = document.getElementById('content');
-function addButton(){
-  count++;
-  if(count>=3){window.location.href='1-4-d.html';return;}
-  const btn=document.createElement('button');
-  btn.textContent='是的';
-  btn.className='confirm-btn';
-  btn.onclick=addButton;
-  content.appendChild(btn);
-}
-content.querySelector('button').onclick=addButton;
+const content=document.getElementById('content');
+const firstBtn=document.getElementById('yes-btn');
+firstBtn.addEventListener('click',()=>{
+  firstBtn.remove();
+  for(let i=0;i<5;i++){
+    const btn=document.createElement('button');
+    btn.textContent='是的';
+    btn.className='confirm-btn';
+    btn.onclick=()=>{window.location.href='1-4-d.html';};
+    content.appendChild(btn);
+  }
+});
 </script>
 </body>
 </html>
