@@ -12,6 +12,21 @@
   .confirm-btn{align-self:center;padding:12px 32px;font-size:18px;background:#fffbea;color:#000;border:2px solid #d1c7b7;box-shadow:0 4px #d1c7b7;border-radius:8px;cursor:pointer;transition:background 0.2s ease,transform 0.1s ease;}
   .confirm-btn:hover{background:#f2e8d5;transform:translateY(-2px);}
   .confirm-btn:active{transform:translateY(2px);box-shadow:0 2px #d1c7b7;}
+  mark {
+    border-radius: 5px;
+  }
+  .highlight-red {
+    background-color: rgba(244, 64, 64, 0.5);
+    color: rgb(83, 20, 20);
+  }
+  .highlight-yellow {
+    background-color: rgba(255, 175, 128, 0.8);
+    color: #44280d;
+  }
+  .highlight-green {
+    background-color: rgba(124, 143, 204, 0.5);
+    color: rgb(33, 50, 79);
+  }
   </style>
 </head>
 <body>
@@ -20,11 +35,11 @@
     <div class="content">
       <p>你們成功救出了小佳。</p>
       <p>藍線在空中勾勒出一段文字：</p>
-      <p>牽牽縈縈 刻骨銘記</p>
-      <p>知心摯友 同窗相倚</p>
-      <p>己外之己 心有靈犀</p>
-      <p>藍絲勾畫牽知己</p>
-      <p>情不需語也無疑</p>
+      <p><mark class="highlight-blue">牽牽絆絆 刻骨銘記</mark></p>
+      <p><mark class="highlight-blue">知心摯友 同窗相倚</mark></p>
+      <p><mark class="highlight-blue">已外之己 心有靈犀</mark></p>
+      <p><mark class="highlight-blue">藍絲勾畫牽知己</mark></p>
+      <p><mark class="highlight-blue">情不需語也無疑</mark></p>
     </div>
     <button class="confirm-btn" type="button">繼續</button>
   </div>
